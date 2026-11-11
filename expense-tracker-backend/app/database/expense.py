@@ -1,0 +1,64 @@
+
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Numeric,
+    Date,
+    ForeignKey,
+    DateTime
+)
+
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+
+from app.database.connection import Base
+
+
+class Expense(Base):
+
+    __tablename__ = "expenses"
+
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    amount = Column(
+        Numeric(10, 2),
+        nullable=False
+    )
+
+    category = Column(
+        String(100),
+        nullable=False
+    )
+
+    description = Column(
+        String(255),
+        nullable=True
+    )
+
+    expense_date = Column(
+        Date,
+        nullable=False,
+        index=True
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )
+
+    owner = relationship(
+        "User",
+        back_populates="expenses"
+    )
